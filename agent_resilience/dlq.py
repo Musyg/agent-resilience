@@ -43,7 +43,7 @@ import logging
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -74,24 +74,24 @@ class Job:
     """
 
     id: str
-    payload: Dict[str, Any]
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    payload: dict[str, Any]
+    metadata: dict[str, Any] = field(default_factory=dict)
     priority: int = Priority.NORMAL.value
     retry_count: int = 0
     max_retries: int = 3
-    scheduled_time: Optional[str] = None
-    created_at: Optional[str] = None
-    error: Optional[str] = None
+    scheduled_time: str | None = None
+    created_at: str | None = None
+    error: str | None = None
 
     def __post_init__(self) -> None:
         if self.created_at is None:
             self.created_at = datetime.now(UTC).isoformat()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Job":
+    def from_dict(cls, data: dict[str, Any]) -> Job:
         return cls(**data)
 
 
@@ -174,7 +174,7 @@ class DLQQueue:
             logger.error("[DLQQueue] schedule error: %s", e)
             return False
 
-    async def dequeue(self) -> Optional[Job]:
+    async def dequeue(self) -> Job | None:
         """Pop the highest-priority job (atomic ZPOPMIN). Marks it in-flight."""
         if not self.connected:
             return None
@@ -257,7 +257,7 @@ class DLQQueue:
     # ------------------------------------------------------------------ #
     # DLQ inspection / replay
     # ------------------------------------------------------------------ #
-    async def list_dlq(self, limit: int = 20) -> List[Job]:
+    async def list_dlq(self, limit: int = 20) -> list[Job]:
         """List the most recent jobs in the DLQ."""
         if not self.connected:
             return []
@@ -302,7 +302,7 @@ class DLQQueue:
     # ------------------------------------------------------------------ #
     # Stats
     # ------------------------------------------------------------------ #
-    async def get_stats(self) -> Dict[str, Any]:
+    async def get_stats(self) -> dict[str, Any]:
         """For a /health or /queue/status endpoint."""
         if not self.connected:
             return {"connected": False}

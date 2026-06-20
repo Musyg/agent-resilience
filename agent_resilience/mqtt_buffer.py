@@ -24,7 +24,6 @@ import logging
 import threading
 import time
 from collections import deque
-from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +38,7 @@ class MQTTMessageBuffer:
         self._lock = threading.Lock()
         self.max_age = max_age_seconds
 
-    def add(self, topic: str, payload: Dict, qos: int = 1, retain: bool = False) -> None:
+    def add(self, topic: str, payload: dict, qos: int = 1, retain: bool = False) -> None:
         """Buffer a message for later delivery."""
         with self._lock:
             self._queue.append(
@@ -69,7 +68,7 @@ class ResilientMQTTPublisher:
     def __init__(self, mqtt_client, buffer_size: int = 1000):
         self.client = mqtt_client
         self.buffer = MQTTMessageBuffer(max_size=buffer_size)
-        self._flush_thread: Optional[threading.Thread] = None
+        self._flush_thread: threading.Thread | None = None
         self._running = False
 
     def start(self) -> None:
@@ -82,7 +81,7 @@ class ResilientMQTTPublisher:
         """Stop the background flush thread."""
         self._running = False
 
-    def publish_critical(self, topic: str, payload: Dict, retain: bool = False) -> bool:
+    def publish_critical(self, topic: str, payload: dict, retain: bool = False) -> bool:
         """Publish now if connected, otherwise buffer. Returns True if sent immediately."""
         if self.client and getattr(self.client, "is_connected", False):
             try:
@@ -117,7 +116,7 @@ class ResilientMQTTPublisher:
                 time.sleep(10)
 
 
-def create_resilient_publisher(mqtt_client, buffer_size: int = 1000) -> Optional[ResilientMQTTPublisher]:
+def create_resilient_publisher(mqtt_client, buffer_size: int = 1000) -> ResilientMQTTPublisher | None:
     """Create and start a resilient publisher. Returns None if no client is given."""
     if not mqtt_client:
         return None

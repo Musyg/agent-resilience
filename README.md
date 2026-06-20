@@ -1,5 +1,9 @@
 # agent-resilience
 
+[![CI](https://github.com/Musyg/agent-resilience/actions/workflows/ci.yml/badge.svg)](https://github.com/Musyg/agent-resilience/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+
 Small, dependency-light resilience primitives for distributed agent systems.
 Three building blocks I rely on to keep long-running, multi-machine agents
 stable when dependencies misbehave:

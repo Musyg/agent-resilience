@@ -40,9 +40,10 @@ from __future__ import annotations
 import functools
 import logging
 import time
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -144,7 +145,7 @@ class CircuitBreaker:
         self.half_open_calls = 0
         logger.info("[CB:%s] %s -> CLOSED (manual reset)", self.name, prev)
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         """Return current state for inspection / dashboard."""
         return {
             "name": self.name,
@@ -167,9 +168,9 @@ class CircuitBreakerRegistry:
         }
     """
 
-    def __init__(self, config: Optional[dict] = None):
+    def __init__(self, config: dict | None = None):
         config = config or {}
-        self._breakers: Dict[str, CircuitBreaker] = {}
+        self._breakers: dict[str, CircuitBreaker] = {}
         default_cfg = config.get("default", {})
         self._default_threshold = default_cfg.get("failure_threshold", 5)
         self._default_timeout = default_cfg.get("recovery_timeout_s", 30)
@@ -195,7 +196,7 @@ class CircuitBreakerRegistry:
             )
         return self._breakers[name]
 
-    def summary(self) -> Dict[str, Dict[str, Any]]:
+    def summary(self) -> dict[str, dict[str, Any]]:
         """Return status of all breakers (for a /health or /circuits endpoint)."""
         return {name: cb.status() for name, cb in self._breakers.items()}
 

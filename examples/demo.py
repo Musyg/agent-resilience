@@ -30,9 +30,7 @@ class FlakyService:
 
 
 def main() -> None:
-    registry = CircuitBreakerRegistry(
-        config={"upstream": {"failure_threshold": 3, "recovery_timeout_s": 2}}
-    )
+    registry = CircuitBreakerRegistry(config={"upstream": {"failure_threshold": 3, "recovery_timeout_s": 2}})
     service = FlakyService(fail_until=3)
 
     for i in range(12):
