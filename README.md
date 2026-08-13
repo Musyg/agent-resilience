@@ -54,6 +54,7 @@ registry = CircuitBreakerRegistry(
 with registry.guarded("llm"):
     answer = call_llm(prompt)
 
+
 # Decorator - works on sync and async functions
 @registry.protect("llm")
 async def call_llm(prompt): ...
