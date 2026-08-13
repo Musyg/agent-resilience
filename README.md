@@ -18,17 +18,23 @@ stable when dependencies misbehave:
 The core (circuit breaker, MQTT buffer) has **zero required dependencies** -
 just the standard library. Redis and paho-mqtt are optional extras.
 
-> These primitives run in production in [Talos](https://github.com/Musyg/talos), my distributed agentic
-> platform, across a four-node fleet. This repo is the generalized, standalone
-> extraction.
+> These interfaces were extracted from resilience components I use in
+> [Talos](https://github.com/Musyg/talos), my distributed agentic platform. This
+> repository packages and tests them as a standalone project.
 
 ## Install
 
+The project is not currently distributed through PyPI. Install the tagged
+release directly from GitHub:
+
 ```bash
-pip install agent-resilience          # core only
-pip install "agent-resilience[redis]" # + Redis DLQ / breaker persistence
-pip install "agent-resilience[mqtt]"  # + MQTT buffer client
+python -m pip install "agent-resilience @ https://github.com/Musyg/agent-resilience/archive/refs/tags/v0.1.0.zip"
+python -m pip install "agent-resilience[redis] @ https://github.com/Musyg/agent-resilience/archive/refs/tags/v0.1.0.zip"
+python -m pip install "agent-resilience[mqtt] @ https://github.com/Musyg/agent-resilience/archive/refs/tags/v0.1.0.zip"
 ```
+
+For development, clone the repository and run
+`python -m pip install -e ".[dev]"`.
 
 ## Circuit breaker
 
@@ -107,7 +113,8 @@ publisher.publish_critical("agents/heartbeat", {"id": "worker-1", "ok": True})
 
 ```bash
 python -m examples.demo   # watch a breaker trip and recover, no services needed
-pytest                    # state-machine tests
+pytest -q                 # circuit breaker, DLQ, and MQTT buffer unit tests
+python -m build           # build source and wheel distributions
 ```
 
 ## License
