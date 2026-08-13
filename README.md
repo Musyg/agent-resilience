@@ -43,10 +43,12 @@ Stop hammering a failing dependency and fail fast instead.
 ```python
 from agent_resilience import CircuitBreakerRegistry, CircuitBreakerOpen
 
-registry = CircuitBreakerRegistry(config={
-    "default": {"failure_threshold": 5, "recovery_timeout_s": 30},
-    "llm":     {"failure_threshold": 3, "recovery_timeout_s": 60},
-})
+registry = CircuitBreakerRegistry(
+    config={
+        "default": {"failure_threshold": 5, "recovery_timeout_s": 30},
+        "llm": {"failure_threshold": 3, "recovery_timeout_s": 60},
+    }
+)
 
 # Context manager - auto records success/failure
 with registry.guarded("llm"):
@@ -89,7 +91,7 @@ try:
     await process(job)
     await queue.complete(job.id)
 except Exception as e:
-    await queue.fail(job, str(e))   # retries up to max_retries, then -> DLQ
+    await queue.fail(job, str(e))  # retries up to max_retries, then -> DLQ
 ```
 
 Failed jobs retry at LOW priority so fresh work keeps precedence; after
