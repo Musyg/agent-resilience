@@ -21,7 +21,7 @@ dependencies = []
 [project.optional-dependencies]
 redis = ["redis>=5.0"]
 mqtt = ["paho-mqtt>=2.0"]
-dev = ["pytest>=8.0", "ruff>=0.6"]
+dev = ["build>=1.2", "pytest>=8.0", "ruff>=0.6"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["agent_resilience"]

@@ -18,17 +18,23 @@ stable when dependencies misbehave:
 The core (circuit breaker, MQTT buffer) has **zero required dependencies** -
 just the standard library. Redis and paho-mqtt are optional extras.
 
-> These primitives run in production in [Talos](https://github.com/Musyg/talos), my distributed agentic
-> platform, across a four-node fleet. This repo is the generalized, standalone
-> extraction.
+> These interfaces were extracted from resilience components I use in
+> [Talos](https://github.com/Musyg/talos), my distributed agentic platform. This
+> repository packages and tests them as a standalone project.
 
 ## Install
 
+The project is not currently distributed through PyPI. Install the tagged
+release directly from GitHub:
+
 ```bash
-pip install agent-resilience          # core only
-pip install "agent-resilience[redis]" # + Redis DLQ / breaker persistence
-pip install "agent-resilience[mqtt]"  # + MQTT buffer client
+python -m pip install "agent-resilience @ https://github.com/Musyg/agent-resilience/archive/refs/tags/v0.1.0.zip"
+python -m pip install "agent-resilience[redis] @ https://github.com/Musyg/agent-resilience/archive/refs/tags/v0.1.0.zip"
+python -m pip install "agent-resilience[mqtt] @ https://github.com/Musyg/agent-resilience/archive/refs/tags/v0.1.0.zip"
 ```
+
+For development, clone the repository and run
+`python -m pip install -e ".[dev]"`.
 
 ## Circuit breaker
 
@@ -37,14 +43,17 @@ Stop hammering a failing dependency and fail fast instead.
 ```python
 from agent_resilience import CircuitBreakerRegistry, CircuitBreakerOpen
 
-registry = CircuitBreakerRegistry(config={
-    "default": {"failure_threshold": 5, "recovery_timeout_s": 30},
-    "llm":     {"failure_threshold": 3, "recovery_timeout_s": 60},
-})
+registry = CircuitBreakerRegistry(
+    config={
+        "default": {"failure_threshold": 5, "recovery_timeout_s": 30},
+        "llm": {"failure_threshold": 3, "recovery_timeout_s": 60},
+    }
+)
 
 # Context manager - auto records success/failure
 with registry.guarded("llm"):
     answer = call_llm(prompt)
+
 
 # Decorator - works on sync and async functions
 @registry.protect("llm")
@@ -83,7 +92,7 @@ try:
     await process(job)
     await queue.complete(job.id)
 except Exception as e:
-    await queue.fail(job, str(e))   # retries up to max_retries, then -> DLQ
+    await queue.fail(job, str(e))  # retries up to max_retries, then -> DLQ
 ```
 
 Failed jobs retry at LOW priority so fresh work keeps precedence; after
@@ -107,7 +116,8 @@ publisher.publish_critical("agents/heartbeat", {"id": "worker-1", "ok": True})
 
 ```bash
 python -m examples.demo   # watch a breaker trip and recover, no services needed
-pytest                    # state-machine tests
+pytest -q                 # circuit breaker, DLQ, and MQTT buffer unit tests
+python -m build           # build source and wheel distributions
 ```
 
 ## License
