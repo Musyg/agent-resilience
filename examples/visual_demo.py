@@ -169,8 +169,8 @@ def main() -> None:
     args = parser.parse_args()
     trace = run_scenario()
     args.output.mkdir(parents=True, exist_ok=True)
-    (args.output / "trace.json").write_text(json.dumps(trace, indent=2) + "\n", encoding="utf-8")
-    (args.output / "index.html").write_text(render_html(trace), encoding="utf-8")
+    (args.output / "trace.json").write_text(json.dumps(trace, indent=2) + "\n", encoding="utf-8", newline="\n")
+    (args.output / "index.html").write_text(render_html(trace), encoding="utf-8", newline="\n")
     for event in trace["events"]:
         print(
             f"{event['elapsed_s']:5.2f}s {event['state']:9} {event['outcome']:7} "

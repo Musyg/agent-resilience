@@ -63,3 +63,5 @@ def test_cli_exports_reproducible_files(trace, tmp_path, monkeypatch):
     visual_demo.main()
     assert json.loads((tmp_path / "trace.json").read_text(encoding="utf-8")) == trace
     assert (tmp_path / "index.html").read_text(encoding="utf-8") == visual_demo.render_html(trace)
+    for name in ["index.html", "trace.json"]:
+        assert b"\r\n" not in (tmp_path / name).read_bytes()
