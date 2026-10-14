@@ -18,10 +18,6 @@ stable when dependencies misbehave:
 The core (circuit breaker, MQTT buffer) has **zero required dependencies** -
 just the standard library. Redis and paho-mqtt are optional extras.
 
-> These interfaces were extracted from resilience components I use in
-> [Talos](https://github.com/Musyg/talos), my distributed agentic platform. This
-> repository packages and tests them as a standalone project.
-
 ## Install
 
 The project is not currently distributed through PyPI. Install the tagged
@@ -113,6 +109,33 @@ publisher.publish_critical("agents/heartbeat", {"id": "worker-1", "ok": True})
 ```
 
 ## Demo & tests
+
+### Failure and recovery, in the browser
+
+[Open the interactive demo](https://musyg.com/demos/agent-resilience/?lang=en)
+([French](https://musyg.com/demos/agent-resilience/?lang=fr)).
+
+From a clone of this repository, run:
+
+```bash
+python -m examples.visual_demo --output demo-output
+```
+
+Open `demo-output/index.html`. The self-contained replay has French and English
+captions, pause, step and restart controls, and the full recorded trace.
+
+The scenario executes the library's circuit breaker against a local simulated
+dependency. Three failures open the circuit; two further requests are rejected
+without calling upstream. After the two-second recovery timeout, a successful
+`HALF_OPEN` probe closes the circuit. The final request passes normally:
+**8 attempts, 6 upstream calls, 2 blocked calls**.
+
+`demo-output/trace.json` contains the observations from that Python run. The
+browser replays them at a readable pace; it does not run a backend or contact an
+external service. No Redis, MQTT broker, API key or third-party script is needed.
+See [the scenario](examples/visual_demo.py) and [the replay template](examples/visual_demo.html).
+
+### Console example and checks
 
 ```bash
 python -m examples.demo   # watch a breaker trip and recover, no services needed
