@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Agent Resilience | Circuit breaker demo</title>
+<title>Agent Resilience | Failure and recovery demos</title>
 <style>
 :root{color-scheme:dark;--blue:#005EFF;--ink:#000;--text:#edf2fa;--muted:#a2afc4;--line:#18263b}
 *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--text);font:16px/1.65 system-ui,sans-serif}
@@ -14,7 +14,8 @@ button{font:inherit;color:var(--text);background:rgba(0,94,255,.12);border:1px s
 button:hover{background:rgba(0,94,255,.23);box-shadow:0 0 22px rgba(0,94,255,.12)}button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:5px}button:disabled{opacity:.4;cursor:default}
 .hero{padding:44px 0 30px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin:0 0 14px}
 h1{font-size:clamp(28px,4vw,46px);line-height:1.15;letter-spacing:-.035em;margin:0 0 18px;max-width:800px}h2{font-size:22px;line-height:1.25;margin:0 0 14px}
-p{margin:0 0 12px}.intro{color:var(--muted);max-width:760px}.flow{display:flex;align-items:center;gap:16px;padding:20px 0 28px;font:13px ui-monospace,monospace;color:var(--muted)}.flow span{padding:8px 12px;border:1px solid var(--line);border-radius:6px}.flow .active{color:var(--text);border-color:var(--blue);background:rgba(0,94,255,.1)}.flow b{color:var(--blue)}
+p{margin:0 0 12px}.intro{color:var(--muted);max-width:760px}.flow{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:20px 0 28px;font:13px ui-monospace,monospace;color:var(--muted)}.flow span{padding:8px 12px;border:1px solid var(--line);border-radius:6px}.flow .active{color:var(--text);border-color:var(--blue);background:rgba(0,94,255,.1)}.flow b{color:var(--blue)}
+.scenarios{display:flex;flex-wrap:wrap;gap:10px}.scenarios button{padding:10px 12px;font-size:14px;background:#000;border-color:var(--line)}.scenarios button[aria-pressed="true"]{border-color:var(--blue);background:rgba(0,94,255,.14)}
 .panel{border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:14px;background:linear-gradient(135deg,rgba(0,94,255,.055),rgba(0,0,0,.9));padding:28px;box-shadow:0 12px 50px rgba(0,94,255,.05)}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}.badge{font:13px ui-monospace,monospace;border:1px solid var(--blue);padding:6px 12px;border-radius:6px;color:var(--text)}.step{font:12px ui-monospace,monospace;color:var(--muted)}
 .observation{min-height:112px}.observation p{color:var(--muted);max-width:760px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;border-top:1px solid var(--line);padding-top:22px;margin-top:20px}.metrics strong{display:block;font:32px ui-monospace,monospace;color:var(--text)}.metrics span{font-size:13px;color:var(--muted)}
@@ -29,7 +30,8 @@ details{margin-top:28px;border-top:1px solid var(--line);padding-top:18px}summar
 <main>
 <header><div class="brand"><span>●</span> Agent Resilience</div><button id="language" type="button">English</button></header>
 <section class="hero"><p class="eyebrow" data-i18n="eyebrow"></p><h1 data-i18n="title"></h1><p class="intro" data-i18n="intro"></p></section>
-<div class="flow" aria-label="Circuit breaker states"><span data-state="closed">CLOSED</span><b>→</b><span data-state="open">OPEN</span><b>→</b><span data-state="half_open">HALF_OPEN</span></div>
+<nav class="scenarios" id="scenario-nav" aria-label="Scénarios"><button type="button" data-scenario="circuit" aria-pressed="true">Circuit breaker</button><button type="button" data-scenario="dlq" aria-pressed="false">DLQ</button><button type="button" data-scenario="mqtt" aria-pressed="false">MQTT</button></nav>
+<div class="flow" id="flow" role="group" aria-label="États observés"></div>
 <section class="panel" aria-label="Recorded execution replay">
 <div class="topline"><span class="badge" id="state">CLOSED</span><span class="step" id="step"></span></div>
 <div class="observation" aria-live="polite" aria-atomic="true"><h2 id="heading"></h2><p id="explanation"></p></div>
@@ -37,54 +39,84 @@ details{margin-top:28px;border-top:1px solid var(--line);padding-top:18px}summar
 <div class="controls"><button class="primary" id="play" type="button"></button><button id="next" type="button" data-i18n="next"></button><button id="restart" type="button" data-i18n="restart"></button></div>
 <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 </section>
-<section class="details"><div><h2 data-i18n="observedTitle"></h2><p data-i18n="observed"></p><a href="https://github.com/Musyg/agent-resilience/blob/main/agent_resilience/circuit_breaker.py" data-i18n="source"></a></div><div><h2 data-i18n="reproduce"></h2><p data-i18n="instructions"></p><div class="command"><code>python -m examples.visual_demo --output demo-output</code></div></div></section>
-<details><summary data-i18n="trace"></summary><div class="table-scroll"><table><thead><tr><th>#</th><th data-i18n="time"></th><th>State</th><th>Outcome</th><th data-i18n="calls"></th></tr></thead><tbody id="rows"></tbody></table></div></details>
+<section class="details"><div><h2 data-i18n="observedTitle"></h2><p data-i18n="observed"></p><a id="source" href="https://github.com/Musyg/agent-resilience/blob/main/agent_resilience/circuit_breaker.py" data-i18n="source"></a></div><div><h2 data-i18n="reproduce"></h2><p data-i18n="instructions"></p><div class="command"><code>python -m examples.visual_demo --output demo-output</code></div></div></section>
+<details><summary data-i18n="trace"></summary><div class="table-scroll"><table><thead><tr><th>#</th><th data-i18n="time"></th><th>State</th><th>Outcome</th><th id="trace-metric"></th></tr></thead><tbody id="rows"></tbody></table></div><p><a href="trace.json" download="agent-resilience-trace.json" data-i18n="traceData"></a></p></details>
 <footer id="provenance"></footer>
 </main>
 <script id="recorded-trace" type="application/json">__RECORDED_TRACE__</script>
 <script>
 'use strict';
 const trace = JSON.parse(document.getElementById('recorded-trace').textContent);
+const scenarios = trace.scenarios || {circuit:trace};
 const copy = {
 fr:{eyebrow:'Démonstration technique / circuit breaker',title:'Quand une dépendance tombe.',intro:'Trois échecs ouvrent le circuit. Les appels suivants sont bloqués. Après le délai de récupération, une sonde réussie rétablit le flux.',attempts:'Tentatives',calls:'Appels à la dépendance',blocked:'Appels bloqués',play:'Lire la démo',pause:'Pause',next:'Étape suivante',restart:'Recommencer',observedTitle:'Ce que montre cette exécution',observed:'Dépendance locale simulée, circuit breaker exécuté en Python. Seuil : 3 échecs. Délai : 2 secondes. Cette vue rejoue les états et compteurs enregistrés, à un rythme de lecture.',source:'Lire le code du circuit breaker',reproduce:'Reproduire',instructions:'Depuis un clone du dépôt, avec Python 3.11 ou plus. Aucun serveur ni clé API nécessaire. Ouvrir ensuite demo-output/index.html.',trace:'Voir la trace complète',time:'Temps mesuré',recorded:'Enregistré',version:'Version',step:'Étape'},
 en:{eyebrow:'Technical demonstration / circuit breaker',title:'When a dependency goes down.',intro:'Three failures open the circuit. Further calls are blocked. After the recovery timeout, a successful probe restores the flow.',attempts:'Attempts',calls:'Upstream calls',blocked:'Blocked calls',play:'Play demo',pause:'Pause',next:'Next step',restart:'Restart',observedTitle:'What this execution shows',observed:'Simulated local dependency, circuit breaker executed in Python. Threshold: 3 failures. Timeout: 2 seconds. This view replays recorded states and counters at a readable pace.',source:'Read the circuit breaker code',reproduce:'Reproduce',instructions:'From a repository clone, with Python 3.11 or later. No server or API key required. Then open demo-output/index.html.',trace:'View the full trace',time:'Measured time',recorded:'Recorded',version:'Version',step:'Step'}
 };
+copy.fr.traceData='Télécharger la trace JSON';
+copy.en.traceData='Download the JSON trace';
 const captions = {
 fr:{initial:['Le circuit est fermé.','La dépendance est disponible. Les appels peuvent passer.'],healthy:['Un premier appel réussit.','La dépendance a été appelée une fois. Le circuit reste fermé.'],failure:['La dépendance ne répond plus.','Chaque échec est compté. Au troisième, le circuit passe à OPEN.'],isolation:['Le circuit bloque les appels.','La demande est rejetée avant de contacter la dépendance. Son compteur d’appels ne bouge pas.'],cooldown:['Le délai de récupération commence.','Le circuit reste ouvert pendant 2 secondes. Aucun reset manuel n’est utilisé.'],probe:['Une sonde est autorisée.','Le délai est écoulé. Le circuit passe à HALF_OPEN avant l’appel de reprise.'],recovery:['La sonde réussit.','La dépendance répond à nouveau. Le circuit se referme et le compteur d’échecs est remis à zéro.'],resumed:['Le flux a repris.','8 tentatives, 6 appels à la dépendance, 2 appels bloqués. Le dernier appel passe normalement.']},
 en:{initial:['The circuit is closed.','The dependency is available. Requests can pass through.'],healthy:['The first call succeeds.','The dependency has been called once. The circuit stays closed.'],failure:['The dependency is unavailable.','Each failure is counted. The third failure opens the circuit.'],isolation:['The circuit blocks requests.','The request is rejected before contacting the dependency. Its call counter does not change.'],cooldown:['The recovery timeout starts.','The circuit stays open for 2 seconds. No manual reset is used.'],probe:['A probe is allowed.','The timeout has elapsed. The circuit enters HALF_OPEN before the recovery call.'],recovery:['The probe succeeds.','The dependency responds again. The circuit closes and the failure counter resets.'],resumed:['Normal flow resumes.','8 attempts, 6 upstream calls, 2 blocked calls. The final request passes normally.']}
 };
-let language = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'fr';
+const scenarioCopy = {
+dlq:{fr:{eyebrow:'Démonstration technique / file d’échecs',title:'Relancer une tâche en échec.',intro:'Une tâche échoue, est retentée puis mise de côté dans la DLQ. Après inspection, la même tâche est relancée et termine son traitement.',attempts:'En attente',calls:'En traitement',blocked:'En DLQ',observed:'DLQQueue exécutée en Python avec un adaptateur Redis en mémoire. La trace suit la même tâche et ses données, sur deux échecs puis une relance réussie.',source:'Lire le code de la file DLQ'},en:{eyebrow:'Technical demonstration / dead-letter queue',title:'Retry a failed task.',intro:'A task fails, is retried, then moves to the DLQ. After inspection, the same task is replayed and completes.',attempts:'Queued',calls:'Processing',blocked:'In the DLQ',observed:'DLQQueue executed in Python with an in-memory Redis adapter. The trace follows the same task and its data through two failures and a successful replay.',source:'Read the DLQ code'}},
+mqtt:{fr:{eyebrow:'Démonstration technique / tampon MQTT',title:'Reprendre les échanges.',intro:'Pendant la coupure, trois messages sont conservés dans le tampon. À la reconnexion, le processus de reprise les transmet dans l’ordre.',attempts:'En attente',calls:'Transmis',blocked:'Produits',observed:'ResilientMQTTPublisher exécuté en Python avec un client MQTT simulé localement. Le thread de reprise de la bibliothèque transmet les trois messages après la reconnexion.',source:'Lire le code du tampon MQTT'},en:{eyebrow:'Technical demonstration / MQTT buffer',title:'Resume the message flow.',intro:'During an outage, three messages stay in the buffer. On reconnection, the background flusher transmits them in order.',attempts:'Buffered',calls:'Published',blocked:'Produced',observed:'ResilientMQTTPublisher executed in Python with a simulated local MQTT client. The library background thread transmits the three messages after reconnection.',source:'Read the MQTT buffer code'}}
+};
+const extraCaptions = {
+dlq:{fr:{queued:['Une tâche entre dans la file.','La tâche task-42 attend son traitement, avec ses données et un seuil de deux échecs.'],processing:['La tâche est prise en charge.','Elle quitte la file et apparaît dans les tâches en traitement.'],retry:['Le premier essai échoue.','La tâche est conservée et remise en file à priorité basse pour une nouvelle tentative.'],quarantined:['Le deuxième essai échoue.','Le seuil est atteint. La tâche rejoint la DLQ au lieu de revenir dans la file principale.'],inspected:['La tâche peut être inspectée.','La DLQ conserve son identifiant, ses données et la dernière erreur.'],replayed:['La même tâche est relancée.','Elle revient dans la file principale. Son compteur d’échecs et sa dernière erreur sont remis à zéro.'],final_attempt:['La tâche est reprise.','La même tâche est à nouveau en traitement, avec ses données d’origine.'],completed:['Le traitement termine avec succès.','Trois essais au total. La tâche ne reste ni en file, ni en traitement, ni dans la DLQ.']},en:{queued:['A task enters the queue.','Task task-42 is waiting, with its data and a two-failure threshold.'],processing:['The task is picked up.','It leaves the queue and appears in the processing set.'],retry:['The first attempt fails.','The task is retained and re-enqueued at low priority for another attempt.'],quarantined:['The second attempt fails.','The threshold is reached. The task moves to the DLQ instead of the main queue.'],inspected:['The task can be inspected.','The DLQ retains its ID, payload and last error.'],replayed:['The same task is replayed.','It returns to the main queue with its failure count and error reset.'],final_attempt:['The task is picked up again.','The same task is processing again with its original data.'],completed:['Processing completes successfully.','Three attempts in total. The task is no longer queued, processing or in the DLQ.']}},
+mqtt:{fr:{offline:['Le client MQTT est déconnecté.','Aucun message n’a encore été produit. Le thread de reprise attend la connexion.'],buffered:['Le message est conservé.','Le client est hors ligne. Le message rejoint le tampon au lieu d’être transmis.'],reconnected:['La connexion est rétablie.','Les trois messages attendent encore dans le tampon. Le thread de reprise va les récupérer.'],flushing:['La reprise transmet les messages.','Le tampon est vidé vers le processus de reprise, qui appelle le client MQTT pour chaque message dans l’ordre.'],drained:['Les trois messages sont transmis.','Le client local a reçu les messages 1, 2 et 3. Le tampon est vide.']},en:{offline:['The MQTT client is disconnected.','No messages have been produced yet. The background flusher is waiting for a connection.'],buffered:['The message is retained.','The client is offline. The message enters the buffer instead of being published.'],reconnected:['The connection is restored.','All three messages are still buffered. The background flusher will collect them.'],flushing:['The flusher transmits the messages.','The buffer drains into the flusher, which calls the MQTT client for each message in order.'],drained:['All three messages are published.','The local client received messages 1, 2 and 3. The buffer is empty.']}}
+};
+const query = new URLSearchParams(location.search);
+let language = query.get('lang') === 'en' ? 'en' : 'fr';
+let scenarioId = Object.hasOwn(scenarios,query.get('scenario')) ? query.get('scenario') : 'circuit';
 let position = 0, timer = null;
 const byId = id => document.getElementById(id);
 function pause(){if(timer !== null)clearInterval(timer);timer=null;}
 function render(){
- const event = trace.events[position], words = copy[language];
+ const selected = scenarios[scenarioId], event = selected.events[position];
+ const words = {...copy[language],...(scenarioCopy[scenarioId]?.[language] || {})};
  document.documentElement.lang = language;
  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = words[el.dataset.i18n]);
  byId('language').textContent = language === 'fr' ? 'English' : 'Français';
+ byId('scenario-nav').setAttribute('aria-label',language === 'fr' ? 'Scénarios' : 'Scenarios');
+ document.querySelectorAll('[data-scenario]').forEach(button=>{
+  button.disabled = !Object.hasOwn(scenarios,button.dataset.scenario);
+  button.setAttribute('aria-pressed',String(button.dataset.scenario===scenarioId));
+ });
+ const states = {circuit:['closed','open','half_open'],dlq:['queued','processing','dlq','completed'],mqtt:['offline','buffered','connected']}[scenarioId];
+ const flow = [];
+ states.forEach((state,index)=>{if(index){const arrow=document.createElement('b');arrow.textContent='→';arrow.setAttribute('aria-hidden','true');flow.push(arrow);}const node=document.createElement('span');node.dataset.state=state;node.textContent=state.toUpperCase();flow.push(node);});
+ byId('flow').replaceChildren(...flow);
+ byId('flow').setAttribute('aria-label',language === 'fr' ? 'États observés' : 'Observed states');
  byId('state').textContent = event.state.toUpperCase();
- byId('step').textContent = `${words.step} ${position+1}/${trace.events.length} · ${event.elapsed_s.toFixed(2)} s`;
- const caption = captions[language][event.phase];
+ byId('step').textContent = `${words.step} ${position+1}/${selected.events.length} · ${event.elapsed_s.toFixed(2)} s`;
+ const caption = scenarioId === 'circuit' ? captions[language][event.phase] : extraCaptions[scenarioId][language][event.phase];
  byId('heading').textContent = caption[0]; byId('explanation').textContent = caption[1];
- byId('attempts').textContent=event.attempts;byId('calls').textContent=event.upstream_calls;byId('blocked').textContent=event.blocked;
+ const metrics = scenarioId === 'circuit' ? [event.attempts,event.upstream_calls,event.blocked] : scenarioId === 'dlq' ? [event.queue_size,event.processing,event.dlq_size] : [event.buffered,event.published_count,event.produced];
+ ['attempts','calls','blocked'].forEach((id,index)=>byId(id).textContent=metrics[index]);
  document.querySelectorAll('[data-state]').forEach(el => el.classList.toggle('active',el.dataset.state === event.state));
- byId('progress').style.width = `${position/(trace.events.length-1)*100}%`;
+ byId('progress').style.width = `${position/(selected.events.length-1)*100}%`;
  byId('play').textContent = timer === null ? words.play : words.pause;
- byId('next').disabled = position === trace.events.length-1;
- byId('provenance').textContent=`${words.recorded} ${trace.recorded_at} · Python · ${words.version} ${trace.library_version}`;
- byId('rows').replaceChildren(...trace.events.map((item,index) => {
+ byId('next').disabled = position === selected.events.length-1;
+ const files={circuit:'circuit_breaker.py',dlq:'dlq.py',mqtt:'mqtt_buffer.py'};
+ byId('source').href='https://github.com/Musyg/agent-resilience/blob/main/agent_resilience/'+files[scenarioId];
+ byId('trace-metric').textContent=scenarioId==='dlq' ? (language==='fr'?'Compteur d’échecs':'Failure count') : words.calls;
+ byId('provenance').textContent=`${words.recorded} ${selected.recorded_at} · Python · ${words.version} ${trace.library_version}`;
+ byId('rows').replaceChildren(...selected.events.map((item,index) => {
   const row=document.createElement('tr');row.classList.toggle('current',index===position);
-  [index+1,item.elapsed_s.toFixed(3)+' s',item.state,item.outcome,item.upstream_calls].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});return row;
+  const detail=scenarioId==='circuit'?item.upstream_calls:scenarioId==='dlq'?item.retry_count:item.published_count;
+  [index+1,item.elapsed_s.toFixed(3)+' s',item.state,item.outcome,detail].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});return row;
  }));
 }
 byId('play').addEventListener('click',()=>{
  if(timer!==null){pause();render();return;}
- if(position===trace.events.length-1)position=0;
- timer=setInterval(()=>{position++;if(position===trace.events.length-1)pause();render();},1800);render();
+ if(position===scenarios[scenarioId].events.length-1)position=0;
+ timer=setInterval(()=>{position++;if(position===scenarios[scenarioId].events.length-1)pause();render();},1800);render();
 });
-byId('next').addEventListener('click',()=>{pause();position=Math.min(position+1,trace.events.length-1);render();});
+byId('next').addEventListener('click',()=>{pause();position=Math.min(position+1,scenarios[scenarioId].events.length-1);render();});
 byId('restart').addEventListener('click',()=>{pause();position=0;render();});
 byId('language').addEventListener('click',()=>{language=language==='fr'?'en':'fr';render();});
+document.querySelectorAll('[data-scenario]').forEach(button=>button.addEventListener('click',()=>{if(Object.hasOwn(scenarios,button.dataset.scenario)){pause();scenarioId=button.dataset.scenario;position=0;render();}}));
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();render();}});
 render();
 </script>

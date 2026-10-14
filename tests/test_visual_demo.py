@@ -58,7 +58,7 @@ def test_html_embeds_trace_without_script_escape(trace):
 
 
 def test_cli_exports_reproducible_files(trace, tmp_path, monkeypatch):
-    monkeypatch.setattr("sys.argv", ["visual_demo", "--output", str(tmp_path)])
+    monkeypatch.setattr("sys.argv", ["visual_demo", "--scenario", "circuit", "--output", str(tmp_path)])
     monkeypatch.setattr(visual_demo, "run_scenario", lambda: trace)
     visual_demo.main()
     assert json.loads((tmp_path / "trace.json").read_text(encoding="utf-8")) == trace

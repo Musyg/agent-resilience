@@ -1,9 +1,9 @@
-"""Execute a serial failure/recovery scenario and export its browser replay.
+"""Execute three resilience scenarios and export their browser replay.
 
     python -m examples.visual_demo --output demo-output
 
-The upstream is a local fake. The breaker is the unmodified library code.
-The HTML replays recorded observations; it does not execute Python in a browser.
+Service boundaries are simulated locally; resilience logic is the library code.
+The HTML replays recorded observations, without running Python in the browser.
 """
 
 from __future__ import annotations
@@ -163,21 +163,35 @@ def render_html(trace: dict) -> str:
     return template.replace("__RECORDED_TRACE__", payload)
 
 
+def run_all_scenarios() -> dict:
+    from examples.demo_scenarios import run_additional_scenarios
+
+    circuit = run_scenario()
+    additional = run_additional_scenarios()
+    return {
+        "schema_version": 2,
+        "library_version": __version__,
+        "recorded_at": datetime.now(UTC).isoformat(),
+        "scenarios": {"circuit": circuit, **additional},
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("demo-output"))
+    parser.add_argument("--scenario", choices=["all", "circuit"], default="all")
     args = parser.parse_args()
-    trace = run_scenario()
+    trace = run_scenario() if args.scenario == "circuit" else run_all_scenarios()
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "trace.json").write_text(
         json.dumps(trace, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
     (args.output / "index.html").write_text(render_html(trace), encoding="utf-8", newline="\n")
-    for event in trace["events"]:
-        print(
-            f"{event['elapsed_s']:5.2f}s {event['state']:9} {event['outcome']:7} "
-            f"calls={event['upstream_calls']} blocked={event['blocked']}"
-        )
+    scenarios = trace.get("scenarios", {"circuit": trace})
+    for name, scenario in scenarios.items():
+        print(f"\n{name}: {len(scenario['events'])} observed events")
+        for event in scenario["events"]:
+            print(f"{event['elapsed_s']:5.2f}s {event['state']:10} {event['outcome']}")
     print(f"Open {args.output / 'index.html'} in a browser.")
 
 

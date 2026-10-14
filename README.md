@@ -130,7 +130,19 @@ without calling upstream. After the two-second recovery timeout, a successful
 `HALF_OPEN` probe closes the circuit. The final request passes normally:
 **8 attempts, 6 upstream calls, 2 blocked calls**.
 
-`demo-output/trace.json` contains the observations from that Python run. The
+Two more scenarios cover the other components:
+
+- **DLQ**: one task fails twice, moves to the dead-letter queue, is inspected,
+  re-enqueued with its error counter reset, and completes on its third attempt.
+- **MQTT buffer**: three messages are retained while the client is offline. The
+  library's background flusher transmits them in order after reconnection.
+
+The queue uses an in-memory Redis adapter and MQTT uses a local client adapter.
+The library components execute unchanged; no external service is needed. The
+JSON trace preserves the task payload, queue sizes and observed message sequence.
+Use `--scenario circuit` to export only the original circuit breaker scenario.
+
+`demo-output/trace.json` contains observations from the three Python scenarios. The
 browser replays them at a readable pace; it does not run a backend or contact an
 external service. No Redis, MQTT broker, API key or third-party script is needed.
 See [the scenario](examples/visual_demo.py) and [the replay template](examples/visual_demo.html).
