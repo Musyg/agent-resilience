@@ -2,9 +2,12 @@
 
 import asyncio
 import copy
+from itertools import count
+from types import SimpleNamespace
 
 import pytest
 
+from examples import demo_scenarios
 from examples.demo_scenarios import (
     MemoryRedis,
     run_dlq_scenario,
@@ -22,6 +25,16 @@ def dlq_trace():
 @pytest.fixture(scope="module")
 def mqtt_trace():
     return run_mqtt_scenario()
+
+
+@pytest.mark.parametrize("scenario", ["dlq", "mqtt"])
+def test_trace_preserves_submillisecond_elapsed_time(monkeypatch, scenario):
+    ticks = count()
+    monkeypatch.setattr(demo_scenarios, "time", SimpleNamespace(perf_counter=lambda: next(ticks) * 0.000123))
+    trace = asyncio.run(run_dlq_scenario()) if scenario == "dlq" else run_mqtt_scenario()
+    assert [event["elapsed_s"] for event in trace["events"]] == [
+        round(index * 0.000123, 6) for index in range(1, 10)
+    ]
 
 
 def test_serial_adapter_orders_scores_and_does_not_invent_jobs():

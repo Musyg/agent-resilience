@@ -38,7 +38,8 @@ def run_scenario() -> dict:
     registry = CircuitBreakerRegistry(config={"upstream": {"failure_threshold": 3, "recovery_timeout_s": 2}})
     dependency = LocalDependency()
     breaker = registry.get("upstream")
-    started = time.monotonic()
+    # High-resolution on Windows too, unlike monotonic() on Python <= 3.12.
+    started = time.perf_counter()
     events = []
     attempts = 0
     blocked = 0
@@ -47,7 +48,7 @@ def run_scenario() -> dict:
         events.append(
             {
                 "index": len(events),
-                "elapsed_s": round(time.monotonic() - started, 3),
+                "elapsed_s": round(time.perf_counter() - started, 6),
                 "phase": phase,
                 "outcome": outcome,
                 "state": breaker.state.value,
@@ -191,7 +192,7 @@ def main() -> None:
     for name, scenario in scenarios.items():
         print(f"\n{name}: {len(scenario['events'])} observed events")
         for event in scenario["events"]:
-            print(f"{event['elapsed_s']:5.2f}s {event['state']:10} {event['outcome']}")
+            print(f"{event['elapsed_s'] * 1000:10.3f} ms {event['state']:10} {event['outcome']}")
     print(f"Open {args.output / 'index.html'} in a browser.")
 
 

@@ -2,6 +2,7 @@
 
 import copy
 import json
+from itertools import count
 from types import SimpleNamespace
 
 import pytest
@@ -17,7 +18,7 @@ def trace(monkeypatch):
     def sleep(seconds):
         clock[0] += seconds
 
-    fake_time = SimpleNamespace(time=lambda: clock[0], monotonic=lambda: clock[0], sleep=sleep)
+    fake_time = SimpleNamespace(time=lambda: clock[0], perf_counter=lambda: clock[0], sleep=sleep)
     monkeypatch.setattr(cb_module, "time", fake_time)
     monkeypatch.setattr(visual_demo, "time", fake_time)
     return visual_demo.run_scenario()
@@ -30,6 +31,25 @@ def test_observed_probe_and_final_counters(trace):
     assert probe["upstream_calls"] == 4  # probe has not called upstream yet
     assert trace["events"][-1]["breaker"]["failure_count"] == 0
     assert trace["events"][-1]["breaker"]["success_count"] == 3
+
+
+def test_circuit_trace_preserves_submillisecond_elapsed_time(monkeypatch):
+    clock = [100.0]
+    ticks = count()
+
+    def sleep(seconds):
+        clock[0] += seconds
+
+    fake_time = SimpleNamespace(
+        time=lambda: clock[0],
+        perf_counter=lambda: clock[0] + next(ticks) * 0.000123,
+        sleep=sleep,
+    )
+    monkeypatch.setattr(cb_module, "time", fake_time)
+    monkeypatch.setattr(visual_demo, "time", fake_time)
+    events = visual_demo.run_scenario()["events"]
+    assert events[0]["elapsed_s"] == 0.000123
+    assert events[1]["elapsed_s"] == 0.000246
 
 
 @pytest.mark.parametrize("defect", ["blocked_call", "missing_probe", "early_probe", "wrong_state"])

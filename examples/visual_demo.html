@@ -17,7 +17,7 @@ h1{font-size:clamp(28px,4vw,46px);line-height:1.15;letter-spacing:-.035em;margin
 p{margin:0 0 12px}.intro{color:var(--muted);max-width:760px}.flow{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:20px 0 28px;font:13px ui-monospace,monospace;color:var(--muted)}.flow span{padding:8px 12px;border:1px solid var(--line);border-radius:6px}.flow .active{color:var(--text);border-color:var(--blue);background:rgba(0,94,255,.1)}.flow b{color:var(--blue)}
 .scenarios{display:flex;flex-wrap:wrap;gap:10px}.scenarios button{padding:10px 12px;font-size:14px;background:#000;border-color:var(--line)}.scenarios button[aria-pressed="true"]{border-color:var(--blue);background:rgba(0,94,255,.14)}
 .panel{border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:14px;background:linear-gradient(135deg,rgba(0,94,255,.055),rgba(0,0,0,.9));padding:28px;box-shadow:0 12px 50px rgba(0,94,255,.05)}
-.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}.badge{font:13px ui-monospace,monospace;border:1px solid var(--blue);padding:6px 12px;border-radius:6px;color:var(--text)}.step{font:12px ui-monospace,monospace;color:var(--muted)}
+.topline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:26px}.badge{font:13px ui-monospace,monospace;border:1px solid var(--blue);padding:6px 12px;border-radius:6px;color:var(--text)}.step{font:12px ui-monospace,monospace;color:var(--muted)}
 .observation{min-height:112px}.observation p{color:var(--muted);max-width:760px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;border-top:1px solid var(--line);padding-top:22px;margin-top:20px}.metrics strong{display:block;font:32px ui-monospace,monospace;color:var(--text)}.metrics span{font-size:13px;color:var(--muted)}
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.primary{background:rgba(0,94,255,.75);border-color:var(--blue)}.progress{height:2px;background:var(--line);margin-top:24px}.progress i{display:block;height:100%;background:var(--blue);width:0}
 .details{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:36px}.details h2{font-size:17px}.details p{font-size:14px;color:var(--muted)}code{font-family:ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere;color:var(--text)}.command{border:1px solid var(--line);padding:14px;border-radius:8px;background:#000}
@@ -71,6 +71,11 @@ let language = query.get('lang') === 'en' ? 'en' : 'fr';
 let scenarioId = Object.hasOwn(scenarios,query.get('scenario')) ? query.get('scenario') : 'circuit';
 let position = 0, timer = null;
 const byId = id => document.getElementById(id);
+function formatElapsed(seconds){
+ const milliseconds = seconds * 1000;
+ const number = new Intl.NumberFormat(language==='fr'?'fr-FR':'en-US',{minimumFractionDigits:3,maximumFractionDigits:3,useGrouping:false});
+ return (milliseconds>0 && milliseconds<0.001 ? '< '+number.format(0.001) : number.format(milliseconds))+' ms';
+}
 function pause(){if(timer !== null)clearInterval(timer);timer=null;}
 function render(){
  const selected = scenarios[scenarioId], event = selected.events[position];
@@ -89,7 +94,8 @@ function render(){
  byId('flow').replaceChildren(...flow);
  byId('flow').setAttribute('aria-label',language === 'fr' ? 'États observés' : 'Observed states');
  byId('state').textContent = event.state.toUpperCase();
- byId('step').textContent = `${words.step} ${position+1}/${selected.events.length} · ${event.elapsed_s.toFixed(2)} s`;
+ byId('step').textContent = `${words.step} ${position+1}/${selected.events.length} · ${formatElapsed(event.elapsed_s)}`;
+ byId('step').title = language==='fr'?'Temps écoulé depuis le début de l’exécution':'Elapsed time since execution started';
  const caption = scenarioId === 'circuit' ? captions[language][event.phase] : extraCaptions[scenarioId][language][event.phase];
  byId('heading').textContent = caption[0]; byId('explanation').textContent = caption[1];
  const metrics = scenarioId === 'circuit' ? [event.attempts,event.upstream_calls,event.blocked] : scenarioId === 'dlq' ? [event.queue_size,event.processing,event.dlq_size] : [event.buffered,event.published_count,event.produced];
@@ -105,7 +111,7 @@ function render(){
  byId('rows').replaceChildren(...selected.events.map((item,index) => {
   const row=document.createElement('tr');row.classList.toggle('current',index===position);
   const detail=scenarioId==='circuit'?item.upstream_calls:scenarioId==='dlq'?item.retry_count:item.published_count;
-  [index+1,item.elapsed_s.toFixed(3)+' s',item.state,item.outcome,detail].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});return row;
+  [index+1,formatElapsed(item.elapsed_s),item.state,item.outcome,detail].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});return row;
  }));
 }
 byId('play').addEventListener('click',()=>{

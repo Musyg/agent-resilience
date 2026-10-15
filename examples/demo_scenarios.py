@@ -100,7 +100,7 @@ async def run_dlq_scenario() -> dict:
     original = Job(id="task-42", payload={"task": "summarize", "document": "demo-note"}, max_retries=2)
     job = original
     events = []
-    started = time.monotonic()
+    started = time.perf_counter()
     worker_calls = 0
 
     async def record(phase, outcome):
@@ -116,7 +116,7 @@ async def run_dlq_scenario() -> dict:
         events.append(
             {
                 "index": len(events),
-                "elapsed_s": round(time.monotonic() - started, 3),
+                "elapsed_s": round(time.perf_counter() - started, 6),
                 "phase": phase,
                 "outcome": outcome,
                 "state": state,
@@ -261,7 +261,7 @@ def run_mqtt_scenario() -> dict:
     client = LocalMQTTClient(lock)
     publisher = ResilientMQTTPublisher(client)
     completed = threading.Event()
-    started = time.monotonic()
+    started = time.perf_counter()
     events = []
     produced = 0
 
@@ -272,7 +272,7 @@ def run_mqtt_scenario() -> dict:
             events.append(
                 {
                     "index": len(events),
-                    "elapsed_s": round(time.monotonic() - started, 3),
+                    "elapsed_s": round(time.perf_counter() - started, 6),
                     "phase": phase,
                     "outcome": outcome,
                     "state": state,

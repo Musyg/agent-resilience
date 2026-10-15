@@ -123,6 +123,10 @@ python -m examples.visual_demo --output demo-output
 
 Open `demo-output/index.html`. The self-contained replay has French and English
 captions, pause, step and restart controls, and the full recorded trace.
+Elapsed execution time is displayed in milliseconds with three decimal places.
+The recording uses Python's high-resolution `perf_counter`; the JSON retains
+`elapsed_s` in seconds, rounded to six decimal places. This is elapsed time from
+the start of each scenario, including waits and observations, not a per-call benchmark.
 
 The scenario executes the library's circuit breaker against a local simulated
 dependency. Three failures open the circuit; two further requests are rejected
