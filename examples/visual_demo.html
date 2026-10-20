@@ -133,6 +133,9 @@ function comparison(words){
  ['baseline','protected'].forEach(mode=>{const nodes=['attempts','upstream_calls','failures','successes','blocked'].map(key=>{const node=document.createElement('div');const label=document.createElement('dt');const value=document.createElement('dd');label.textContent=words[{upstream_calls:'calls'}[key]||key];value.textContent=data[mode].summary[key];value.dataset.run=mode;value.dataset.metric=key;node.append(label,value);return node;});byId('comparison-'+mode).replaceChildren(...nodes);});
 }
 function render(){
+ const focused=document.activeElement;
+ const focusContainer=focused?.closest('#timeline,#rows')?.id;
+ const focusStep=focusContainer?focused.dataset.step:null;
  const selected = scenarios[scenarioId], event = selected.events[position];
  const words = {...copy[language],...(scenarioCopy[scenarioId]?.[language] || {})};
  document.documentElement.lang = language;
@@ -191,6 +194,7 @@ function render(){
   const stepCell=document.createElement('td'),button=document.createElement('button');button.type='button';button.className='trace-select';button.dataset.step=String(index);button.textContent=String(index+1);button.setAttribute('aria-label',`${words.step} ${index+1}`);if(index===position)button.setAttribute('aria-current','step');button.addEventListener('click',()=>selectStep(index));stepCell.append(button);row.append(stepCell);
   [formatElapsed(item.elapsed_s),item.state,item.outcome,detail].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});return row;
  }));
+ if(focusContainer && focusStep!==undefined)byId(focusContainer).querySelector(`[data-step="${focusStep}"]`)?.focus({preventScroll:true});
 }
 byId('play').addEventListener('click',()=>{
  if(timer!==null){pause();render();return;}
