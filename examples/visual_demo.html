@@ -12,6 +12,8 @@ main{max-width:1120px;margin:auto;padding:32px 32px 56px}header{display:flex;ali
 a{color:var(--text);text-underline-offset:5px}a:hover{color:var(--blue)}.brand{font-weight:650;letter-spacing:.02em}.brand span{color:var(--blue)}
 button{font:inherit;color:var(--text);background:rgba(0,94,255,.12);border:1px solid rgba(0,94,255,.5);border-radius:9px;padding:10px 18px;cursor:pointer}
 button:hover{background:rgba(0,94,255,.23);box-shadow:0 0 22px rgba(0,94,255,.12)}button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:5px}button:disabled{opacity:.4;cursor:default}
+select{font:inherit;color:var(--text);background:#000;border:1px solid var(--line);border-radius:8px;padding:9px}select:focus-visible{outline:2px solid var(--blue);outline-offset:4px}[hidden]{display:none!important}.back{font-size:13px}.state-label{font:12px ui-monospace,monospace;color:var(--muted)}
+.overview{border-left:3px solid var(--blue);padding:0 0 0 18px;margin:0 0 26px}.overview p{margin:0}.overview .eyebrow{margin-bottom:5px}.journey{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.journey-item{border:1px solid var(--line);border-radius:8px;padding:12px;flex:1 1 170px;min-width:0}.journey-item strong{display:block;font-size:14px}.journey-item small{color:var(--muted);display:block;overflow-wrap:anywhere}.journey-item.active{border-color:var(--blue);background:rgba(0,94,255,.1)}.journey-item.blocked{border-style:dashed;border-color:var(--blue)}.journey-note{width:100%;font-size:13px;color:var(--muted);margin:0}.token{display:inline-block;border:1px solid var(--blue);border-radius:4px;padding:1px 7px;margin:4px 4px 0 0;color:var(--text);font:12px ui-monospace,monospace}.timeline{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.timeline button{min-width:38px;padding:6px 9px;font:12px ui-monospace,monospace;background:#000}.timeline button[aria-current="step"]{background:rgba(0,94,255,.2);border-color:var(--blue)}.speed-control{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted)}.result{border-top:1px solid var(--line);padding-top:16px;margin-top:20px;color:var(--text);font-size:14px}.comparison{margin-top:30px;border:1px solid var(--line);border-radius:12px;padding:22px}.comparison h2{font-size:19px}.comparison p{font-size:14px;color:var(--muted)}.comparison-columns{display:flex;gap:18px;flex-wrap:wrap}.comparison-column{flex:1 1 220px;min-width:0;border-left:2px solid var(--line);padding-left:14px}.comparison-column.protected{border-color:var(--blue)}.comparison-column h3{font-size:15px;margin:0 0 12px}.comparison-column dl{margin:0}.comparison-column dl>div{display:flex;gap:12px;justify-content:space-between}.comparison-column dt{font-size:13px;color:var(--muted)}.comparison-column dd{margin:0;font:14px ui-monospace,monospace}.trace-select{padding:4px 8px;font:inherit;min-width:35px}footer{overflow-wrap:anywhere}
 .hero{padding:44px 0 30px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin:0 0 14px}
 h1{font-size:clamp(28px,4vw,46px);line-height:1.15;letter-spacing:-.035em;margin:0 0 18px;max-width:800px}h2{font-size:22px;line-height:1.25;margin:0 0 14px}
 p{margin:0 0 12px}.intro{color:var(--muted);max-width:760px}.flow{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:20px 0 28px;font:13px ui-monospace,monospace;color:var(--muted)}.flow span{padding:8px 12px;border:1px solid var(--line);border-radius:6px}.flow .active{color:var(--text);border-color:var(--blue);background:rgba(0,94,255,.1)}.flow b{color:var(--blue)}
@@ -20,7 +22,7 @@ p{margin:0 0 12px}.intro{color:var(--muted);max-width:760px}.flow{display:flex;a
 .topline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:26px}.badge{font:13px ui-monospace,monospace;border:1px solid var(--blue);padding:6px 12px;border-radius:6px;color:var(--text)}.step{font:12px ui-monospace,monospace;color:var(--muted)}
 .observation{min-height:112px}.observation p{color:var(--muted);max-width:760px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;border-top:1px solid var(--line);padding-top:22px;margin-top:20px}.metrics strong{display:block;font:32px ui-monospace,monospace;color:var(--text)}.metrics span{font-size:13px;color:var(--muted)}
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.primary{background:rgba(0,94,255,.75);border-color:var(--blue)}.progress{height:2px;background:var(--line);margin-top:24px}.progress i{display:block;height:100%;background:var(--blue);width:0}
-.details{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:36px}.details h2{font-size:17px}.details p{font-size:14px;color:var(--muted)}code{font-family:ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere;color:var(--text)}.command{border:1px solid var(--line);padding:14px;border-radius:8px;background:#000}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:36px}.details h2{font-size:17px}.details p{font-size:14px;color:var(--muted)}code{font-family:ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere;color:var(--text)}.command{border:1px solid var(--line);padding:14px;border-radius:8px;background:#000;white-space:pre-wrap}
 details{margin-top:28px;border-top:1px solid var(--line);padding-top:18px}summary{cursor:pointer;color:var(--muted)}.table-scroll{overflow-x:auto;margin-top:16px}table{border-collapse:collapse;width:100%;font:12px/1.8 ui-monospace,monospace;text-align:left;white-space:nowrap}td,th{border-bottom:1px solid var(--line);padding:8px}th{color:var(--muted);font-weight:400}tr.current{background:rgba(0,94,255,.13)}footer{margin-top:28px;font-size:12px;color:var(--muted)}
 @media(max-width:600px){main{padding:20px 18px 36px}.hero{padding-top:30px}.flow{gap:8px;font-size:11px}.flow span{padding:7px 8px}.panel{padding:20px}.metrics{gap:12px}.metrics strong{font-size:27px}.details{grid-template-columns:1fr;gap:20px}.observation{min-height:156px}.controls button{padding:9px 12px;font-size:14px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
@@ -28,19 +30,24 @@ details{margin-top:28px;border-top:1px solid var(--line);padding-top:18px}summar
 </head>
 <body>
 <main>
-<header><div class="brand"><span>●</span> Agent Resilience</div><button id="language" type="button">English</button></header>
+<header><div><div class="brand"><span>●</span> Agent Resilience</div><a class="back" id="back-to-project" href="/fr/realisations/agent-resilience/" data-i18n="back"></a></div><button id="language" type="button">English</button></header>
 <section class="hero"><p class="eyebrow" data-i18n="eyebrow"></p><h1 data-i18n="title"></h1><p class="intro" data-i18n="intro"></p></section>
 <nav class="scenarios" id="scenario-nav" aria-label="Scénarios"><button type="button" data-scenario="circuit" aria-pressed="true">Circuit breaker</button><button type="button" data-scenario="dlq" aria-pressed="false">DLQ</button><button type="button" data-scenario="mqtt" aria-pressed="false">MQTT</button></nav>
 <div class="flow" id="flow" role="group" aria-label="États observés"></div>
-<section class="panel" aria-label="Recorded execution replay">
-<div class="topline"><span class="badge" id="state">CLOSED</span><span class="step" id="step"></span></div>
+<section class="overview" aria-labelledby="overview-label"><p class="eyebrow" id="overview-label" data-i18n="outcomeTitle"></p><p id="outcome-summary"></p></section>
+<section class="panel" id="replay" aria-label="Relecture d’une exécution enregistrée">
+<div class="topline"><div><span class="state-label" data-i18n="stateLabel"></span> <span class="badge" id="state">CLOSED</span></div><span class="step" id="step"></span></div>
 <div class="observation" aria-live="polite" aria-atomic="true"><h2 id="heading"></h2><p id="explanation"></p></div>
+<div class="journey" id="journey" role="group"></div>
 <div class="metrics"><div><strong id="attempts">0</strong><span data-i18n="attempts"></span></div><div><strong id="calls">0</strong><span data-i18n="calls"></span></div><div><strong id="blocked">0</strong><span data-i18n="blocked"></span></div></div>
-<div class="controls"><button class="primary" id="play" type="button"></button><button id="next" type="button" data-i18n="next"></button><button id="restart" type="button" data-i18n="restart"></button></div>
+<div class="controls"><button class="primary" id="play" type="button"></button><button id="previous" type="button" data-i18n="previous"></button><button id="next" type="button" data-i18n="next"></button><button id="restart" type="button" data-i18n="restart"></button><label class="speed-control" for="speed"><span data-i18n="speedLabel"></span><select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
+<nav class="timeline" id="timeline" aria-label="Choisir une étape"></nav>
 <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+<p class="result" id="result" hidden></p>
 </section>
-<section class="details"><div><h2 data-i18n="observedTitle"></h2><p data-i18n="observed"></p><a id="source" href="https://github.com/Musyg/agent-resilience/blob/main/agent_resilience/circuit_breaker.py" data-i18n="source"></a></div><div><h2 data-i18n="reproduce"></h2><p data-i18n="instructions"></p><div class="command"><code>python -m examples.visual_demo --output demo-output</code></div></div></section>
-<details><summary data-i18n="trace"></summary><div class="table-scroll"><table><thead><tr><th>#</th><th data-i18n="time"></th><th>State</th><th>Outcome</th><th id="trace-metric"></th></tr></thead><tbody id="rows"></tbody></table></div><p><a href="trace.json" download="agent-resilience-trace.json" data-i18n="traceData"></a></p></details>
+<section class="comparison" id="comparison" hidden aria-labelledby="comparison-title"><p class="eyebrow" data-i18n="fullRun"></p><h2 id="comparison-title" data-i18n="comparisonTitle"></h2><p data-i18n="comparisonIntro"></p><div class="comparison-columns"><div class="comparison-column" data-mode="baseline"><h3 data-i18n="baselineLabel"></h3><dl id="comparison-baseline"></dl></div><div class="comparison-column protected" data-mode="protected"><h3 data-i18n="protectedLabel"></h3><dl id="comparison-protected"></dl></div></div></section>
+<section class="details"><div><h2 data-i18n="observedTitle"></h2><p data-i18n="observed"></p><a id="source" href="https://github.com/Musyg/agent-resilience/blob/main/agent_resilience/circuit_breaker.py" data-i18n="source"></a></div><div><h2 data-i18n="reproduce"></h2><p data-i18n="instructions"></p><div class="command"><code id="reproduction-command">python -m examples.visual_demo --output demo-output</code></div></div></section>
+<details><summary data-i18n="trace"></summary><div class="table-scroll"><table><thead><tr><th>#</th><th data-i18n="time"></th><th data-i18n="stateLabel"></th><th data-i18n="outcomeLabel"></th><th id="trace-metric"></th></tr></thead><tbody id="rows"></tbody></table></div><p><a href="trace.json" download="agent-resilience-trace.json" data-i18n="traceData"></a></p></details>
 <footer id="provenance"></footer>
 </main>
 <script id="recorded-trace" type="application/json">__RECORDED_TRACE__</script>
@@ -54,6 +61,8 @@ en:{eyebrow:'Technical demonstration / circuit breaker',title:'When a dependency
 };
 copy.fr.traceData='Télécharger la trace JSON';
 copy.en.traceData='Download the JSON trace';
+Object.assign(copy.fr,{back:'← Retour au projet',previous:'Étape précédente',speedLabel:'Vitesse de lecture',stateLabel:'État',outcomeLabel:'Résultat',outcomeTitle:'Résultat du parcours complet',executionTime:'Temps d’exécution',timelineLabel:'Choisir une étape',replayLabel:'Relecture d’une exécution enregistrée',journeyLabel:'Trajet des appels et des données',fullRun:'Comparaison des exécutions complètes',comparisonTitle:'La même panne, avec et sans circuit breaker.',comparisonIntro:'Les deux exécutions suivent la même séquence de demandes. Ces totaux portent sur le parcours complet, indépendamment de l’étape affichée.',baselineLabel:'Sans circuit breaker',protectedLabel:'Avec circuit breaker',failures:'Échecs de la dépendance',successes:'Appels réussis',task:'Tâche',queue:'File',processing:'Traitement',quarantine:'DLQ',completed:'Terminée',payload:'Données',retries:'Échecs depuis la relance',workerCalls:'Essais effectués',buffer:'Tampon',flusher:'Reprise',client:'Client local',notProduced:'Pas encore produit',bufferedMessage:'En tampon',inFlight:'Dans la reprise',publishedMessage:'Appel publish enregistré',dependency:'Dépendance',request:'Demande',gate:'Circuit breaker',blockedHere:'Bloquée ici',notCalled:'Non appelée',callRecorded:'Appel enregistré',noCall:'Aucun appel à cette étape',revision:'Révision',workingTree:'Sources modifiées lors de la capture',environment:'Environnement',sourceHash:'SHA-256 du module'});
+Object.assign(copy.en,{back:'← Back to project',previous:'Previous step',speedLabel:'Playback speed',stateLabel:'State',outcomeLabel:'Outcome',outcomeTitle:'Full-run outcome',executionTime:'Execution time',timelineLabel:'Choose a step',replayLabel:'Replay of a recorded execution',journeyLabel:'Request and data journey',fullRun:'Complete-run comparison',comparisonTitle:'The same outage, with and without a circuit breaker.',comparisonIntro:'Both executions follow the same request schedule. These totals cover the complete run, independently of the selected step.',baselineLabel:'Without circuit breaker',protectedLabel:'With circuit breaker',failures:'Upstream failures',successes:'Successful calls',task:'Task',queue:'Queue',processing:'Processing',quarantine:'DLQ',completed:'Completed',payload:'Payload',retries:'Failures since replay',workerCalls:'Worker attempts',buffer:'Buffer',flusher:'Flusher',client:'Local client',notProduced:'Not produced yet',bufferedMessage:'Buffered',inFlight:'In the flusher',publishedMessage:'Recorded publish call',dependency:'Dependency',request:'Request',gate:'Circuit breaker',blockedHere:'Blocked here',notCalled:'Not called',callRecorded:'Call recorded',noCall:'No call at this step',revision:'Revision',workingTree:'Sources modified at capture time',environment:'Environment',sourceHash:'Module SHA-256'});
 const captions = {
 fr:{initial:['Le circuit est fermé.','La dépendance est disponible. Les appels peuvent passer.'],healthy:['Un premier appel réussit.','La dépendance a été appelée une fois. Le circuit reste fermé.'],failure:['La dépendance ne répond plus.','Chaque échec est compté. Au troisième, le circuit passe à OPEN.'],isolation:['Le circuit bloque les appels.','La demande est rejetée avant de contacter la dépendance. Son compteur d’appels ne bouge pas.'],cooldown:['Le délai de récupération commence.','Le circuit reste ouvert pendant 2 secondes. Aucun reset manuel n’est utilisé.'],probe:['Une sonde est autorisée.','Le délai est écoulé. Le circuit passe à HALF_OPEN avant l’appel de reprise.'],recovery:['La sonde réussit.','La dépendance répond à nouveau. Le circuit se referme et le compteur d’échecs est remis à zéro.'],resumed:['Le flux a repris.','8 tentatives, 6 appels à la dépendance, 2 appels bloqués. Le dernier appel passe normalement.']},
 en:{initial:['The circuit is closed.','The dependency is available. Requests can pass through.'],healthy:['The first call succeeds.','The dependency has been called once. The circuit stays closed.'],failure:['The dependency is unavailable.','Each failure is counted. The third failure opens the circuit.'],isolation:['The circuit blocks requests.','The request is rejected before contacting the dependency. Its call counter does not change.'],cooldown:['The recovery timeout starts.','The circuit stays open for 2 seconds. No manual reset is used.'],probe:['A probe is allowed.','The timeout has elapsed. The circuit enters HALF_OPEN before the recovery call.'],recovery:['The probe succeeds.','The dependency responds again. The circuit closes and the failure counter resets.'],resumed:['Normal flow resumes.','8 attempts, 6 upstream calls, 2 blocked calls. The final request passes normally.']}
@@ -66,23 +75,72 @@ const extraCaptions = {
 dlq:{fr:{queued:['Une tâche entre dans la file.','La tâche task-42 attend son traitement, avec ses données et un seuil de deux échecs.'],processing:['La tâche est prise en charge.','Elle quitte la file et apparaît dans les tâches en traitement.'],retry:['Le premier essai échoue.','La tâche est conservée et remise en file à priorité basse pour une nouvelle tentative.'],quarantined:['Le deuxième essai échoue.','Le seuil est atteint. La tâche rejoint la DLQ au lieu de revenir dans la file principale.'],inspected:['La tâche peut être inspectée.','La DLQ conserve son identifiant, ses données et la dernière erreur.'],replayed:['La même tâche est relancée.','Elle revient dans la file principale. Son compteur d’échecs et sa dernière erreur sont remis à zéro.'],final_attempt:['La tâche est reprise.','La même tâche est à nouveau en traitement, avec ses données d’origine.'],completed:['Le traitement termine avec succès.','Trois essais au total. La tâche ne reste ni en file, ni en traitement, ni dans la DLQ.']},en:{queued:['A task enters the queue.','Task task-42 is waiting, with its data and a two-failure threshold.'],processing:['The task is picked up.','It leaves the queue and appears in the processing set.'],retry:['The first attempt fails.','The task is retained and re-enqueued at low priority for another attempt.'],quarantined:['The second attempt fails.','The threshold is reached. The task moves to the DLQ instead of the main queue.'],inspected:['The task can be inspected.','The DLQ retains its ID, payload and last error.'],replayed:['The same task is replayed.','It returns to the main queue with its failure count and error reset.'],final_attempt:['The task is picked up again.','The same task is processing again with its original data.'],completed:['Processing completes successfully.','Three attempts in total. The task is no longer queued, processing or in the DLQ.']}},
 mqtt:{fr:{offline:['Le client MQTT est déconnecté.','Aucun message n’a encore été produit. Le thread de reprise attend la connexion.'],buffered:['Le message est conservé.','Le client est hors ligne. Le message rejoint le tampon au lieu d’être transmis.'],reconnected:['La connexion est rétablie.','Les trois messages attendent encore dans le tampon. Le thread de reprise va les récupérer.'],flushing:['La reprise transmet les messages.','Le tampon est vidé vers le processus de reprise, qui appelle le client MQTT pour chaque message dans l’ordre.'],drained:['Les trois messages sont transmis.','Le client local a reçu les messages 1, 2 et 3. Le tampon est vide.']},en:{offline:['The MQTT client is disconnected.','No messages have been produced yet. The background flusher is waiting for a connection.'],buffered:['The message is retained.','The client is offline. The message enters the buffer instead of being published.'],reconnected:['The connection is restored.','All three messages are still buffered. The background flusher will collect them.'],flushing:['The flusher transmits the messages.','The buffer drains into the flusher, which calls the MQTT client for each message in order.'],drained:['All three messages are published.','The local client received messages 1, 2 and 3. The buffer is empty.']}}
 };
-const query = new URLSearchParams(location.search);
-let language = query.get('lang') === 'en' ? 'en' : 'fr';
-let scenarioId = Object.hasOwn(scenarios,query.get('scenario')) ? query.get('scenario') : 'circuit';
-let position = 0, timer = null;
+let language = 'fr', scenarioId = 'circuit', position = 0, timer = null;
+let speed = 1;
 const byId = id => document.getElementById(id);
+function readLocation(){
+ const query=new URLSearchParams(location.search);
+ language=query.get('lang')==='en'?'en':'fr';
+ scenarioId=Object.hasOwn(scenarios,query.get('scenario'))?query.get('scenario'):(Object.hasOwn(scenarios,'circuit')?'circuit':Object.keys(scenarios)[0]);
+ const step=query.get('step');
+ const parsed=step!==null && /^\d+$/.test(step)?Number(step):1;
+ position=Math.max(0,Math.min(Number.isSafeInteger(parsed)?parsed-1:0,scenarios[scenarioId].events.length-1));
+}
+function syncLocation(mode='push'){
+ const url=new URL(location.href);
+ url.searchParams.set('lang',language);url.searchParams.set('scenario',scenarioId);url.searchParams.set('step',String(position+1));
+ if(url.href!==location.href)history[mode==='replace'?'replaceState':'pushState'](null,'',url);
+}
 function formatElapsed(seconds){
  const milliseconds = seconds * 1000;
  const number = new Intl.NumberFormat(language==='fr'?'fr-FR':'en-US',{minimumFractionDigits:3,maximumFractionDigits:3,useGrouping:false});
  return (milliseconds>0 && milliseconds<0.001 ? '< '+number.format(0.001) : number.format(milliseconds))+' ms';
 }
 function pause(){if(timer !== null)clearInterval(timer);timer=null;}
+function selectStep(index){const focused=document.activeElement;const container=focused?.closest('#timeline,#rows')?.id;pause();position=Math.max(0,Math.min(index,scenarios[scenarioId].events.length-1));syncLocation();render();if(container)byId(container).querySelector(`[data-step="${position}"]`)?.focus({preventScroll:true});}
+function start(){
+ timer=setInterval(()=>{position=Math.min(position+1,scenarios[scenarioId].events.length-1);if(position===scenarios[scenarioId].events.length-1)pause();syncLocation('replace');render();},1800/speed);
+}
+function outcome(selected,words){
+ const last=selected.events[selected.events.length-1], fr=language==='fr';
+ if(scenarioId==='circuit')return fr?`${last.attempts} tentatives, ${last.upstream_calls} appels à la dépendance, ${last.blocked} appels bloqués. État final : ${last.state.toUpperCase()}.`:`${last.attempts} attempts, ${last.upstream_calls} upstream calls, ${last.blocked} blocked calls. Final state: ${last.state.toUpperCase()}.`;
+ if(scenarioId==='dlq')return fr?`${last.job.id} : ${last.state==='completed'?'traitement terminé':'état '+last.state}, après ${last.worker_calls} essais. Même identifiant et mêmes données tout au long du parcours.`:`${last.job.id}: ${last.state==='completed'?'processing completed':'state '+last.state}, after ${last.worker_calls} worker attempts. The same ID and payload throughout the run.`;
+ const sequence=last.messages.map(message=>message.payload.sequence).join(' → ');
+ return fr?`${last.published_count}/${last.produced} appels publish enregistrés par le client local (${sequence}). ${last.buffered} message en tampon à la fin.`:`${last.published_count}/${last.produced} publish calls recorded by the local client (${sequence}). ${last.buffered} messages buffered at the end.`;
+}
+function journey(event,words){
+ const nodes=[];
+ function card(title,detail,active=false,blocked=false,tokens=[]){const node=document.createElement('div');node.className='journey-item';node.classList.toggle('active',active);node.classList.toggle('blocked',blocked);const heading=document.createElement('strong');heading.textContent=title;const text=document.createElement('small');text.textContent=detail;node.append(heading,text);tokens.forEach(value=>{const token=document.createElement('span');token.className='token';token.textContent=value;node.append(token);});nodes.push(node);}
+ if(scenarioId==='circuit'){
+  card(words.request,`${words.attempts}: ${event.attempts}`,event.called || event.outcome==='blocked');
+  card(words.gate,event.outcome==='blocked'?words.blockedHere:event.state.toUpperCase(),true,event.outcome==='blocked');
+  card(words.dependency,event.outcome==='blocked'?words.notCalled:event.called?words.callRecorded:words.noCall,event.called);
+ }else if(scenarioId==='dlq'){
+  const labels={queued:words.queue,processing:words.processing,dlq:words.quarantine,completed:words.completed};
+  ['queued','processing','dlq','completed'].forEach(state=>card(labels[state],event.state===state?event.job.id:'',event.state===state,false,event.state===state?[`${words.retries}: ${event.retry_count}`,`${words.workerCalls}: ${event.worker_calls}`]:[]));
+  const payload=document.createElement('p');payload.className='journey-note';payload.textContent=`${words.payload}: ${JSON.stringify(event.job.payload)}`;nodes.push(payload);
+ }else{
+  const published=new Set(event.messages.map(message=>message.payload.sequence));
+  [1,2,3].forEach(sequence=>{const produced=sequence<=event.produced;const sent=published.has(sequence);const buffered=produced&&!sent&&event.buffered>0;const status=!produced?words.notProduced:sent?words.publishedMessage:buffered?words.bufferedMessage:words.inFlight;card(`Message ${sequence}`,status,produced,false,[sent?words.client:buffered?words.buffer:produced?words.flusher:''].filter(Boolean));});
+ }
+ byId('journey').replaceChildren(...nodes);byId('journey').setAttribute('aria-label',words.journeyLabel);
+}
+function comparison(words){
+ const data=trace.comparisons?.circuit;
+ const valid=data && ['baseline','protected'].every(mode=>data[mode]?.summary && ['attempts','upstream_calls','failures','successes','blocked'].every(key=>Number.isFinite(data[mode].summary[key])));
+ byId('comparison').hidden=scenarioId!=='circuit'||!valid;
+ if(!valid)return;
+ ['baseline','protected'].forEach(mode=>{const nodes=['attempts','upstream_calls','failures','successes','blocked'].map(key=>{const node=document.createElement('div');const label=document.createElement('dt');const value=document.createElement('dd');label.textContent=words[{upstream_calls:'calls'}[key]||key];value.textContent=data[mode].summary[key];value.dataset.run=mode;value.dataset.metric=key;node.append(label,value);return node;});byId('comparison-'+mode).replaceChildren(...nodes);});
+}
 function render(){
  const selected = scenarios[scenarioId], event = selected.events[position];
  const words = {...copy[language],...(scenarioCopy[scenarioId]?.[language] || {})};
  document.documentElement.lang = language;
  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = words[el.dataset.i18n]);
  byId('language').textContent = language === 'fr' ? 'English' : 'Français';
+ byId('back-to-project').href=language==='fr'?'/fr/realisations/agent-resilience/':'/work/agent-resilience/';
+ byId('replay').setAttribute('aria-label',words.replayLabel);
+ byId('timeline').setAttribute('aria-label',words.timelineLabel);
  byId('scenario-nav').setAttribute('aria-label',language === 'fr' ? 'Scénarios' : 'Scenarios');
  document.querySelectorAll('[data-scenario]').forEach(button=>{
   button.disabled = !Object.hasOwn(scenarios,button.dataset.scenario);
@@ -94,36 +152,60 @@ function render(){
  byId('flow').replaceChildren(...flow);
  byId('flow').setAttribute('aria-label',language === 'fr' ? 'États observés' : 'Observed states');
  byId('state').textContent = event.state.toUpperCase();
- byId('step').textContent = `${words.step} ${position+1}/${selected.events.length} · ${formatElapsed(event.elapsed_s)}`;
+ byId('step').textContent = `${words.step} ${position+1}/${selected.events.length} · ${words.executionTime}: ${formatElapsed(event.elapsed_s)}`;
  byId('step').title = language==='fr'?'Temps écoulé depuis le début de l’exécution':'Elapsed time since execution started';
  const caption = scenarioId === 'circuit' ? captions[language][event.phase] : extraCaptions[scenarioId][language][event.phase];
  byId('heading').textContent = caption[0]; byId('explanation').textContent = caption[1];
+ journey(event,words);
+ byId('outcome-summary').textContent=outcome(selected,words);
+ byId('result').hidden=position!==selected.events.length-1;
+ byId('result').textContent=outcome(selected,words);
  const metrics = scenarioId === 'circuit' ? [event.attempts,event.upstream_calls,event.blocked] : scenarioId === 'dlq' ? [event.queue_size,event.processing,event.dlq_size] : [event.buffered,event.published_count,event.produced];
  ['attempts','calls','blocked'].forEach((id,index)=>byId(id).textContent=metrics[index]);
  document.querySelectorAll('[data-state]').forEach(el => el.classList.toggle('active',el.dataset.state === event.state));
  byId('progress').style.width = `${position/(selected.events.length-1)*100}%`;
  byId('play').textContent = timer === null ? words.play : words.pause;
+ byId('previous').disabled = position === 0;
  byId('next').disabled = position === selected.events.length-1;
+ byId('speed').value=String(speed);
+ byId('timeline').replaceChildren(...selected.events.map((item,index)=>{const button=document.createElement('button');button.type='button';button.dataset.step=String(index);button.textContent=String(index+1);const caption=scenarioId==='circuit'?captions[language][item.phase]:extraCaptions[scenarioId][language][item.phase];button.setAttribute('aria-label',`${words.step} ${index+1}: ${caption[0]}`);if(index===position)button.setAttribute('aria-current','step');button.addEventListener('click',()=>selectStep(index));return button;}));
  const files={circuit:'circuit_breaker.py',dlq:'dlq.py',mqtt:'mqtt_buffer.py'};
- byId('source').href='https://github.com/Musyg/agent-resilience/blob/main/agent_resilience/'+files[scenarioId];
+ const sourceRevision='9d2254d54ff66be5ed627a5385155a5a6e58f32d';
+ byId('source').href='https://github.com/Musyg/agent-resilience/blob/'+sourceRevision+'/agent_resilience/'+files[scenarioId];
  byId('trace-metric').textContent=scenarioId==='dlq' ? (language==='fr'?'Compteur d’échecs':'Failure count') : words.calls;
- byId('provenance').textContent=`${words.recorded} ${selected.recorded_at} · Python · ${words.version} ${trace.library_version}`;
+ const provenance=trace.provenance;
+ const details=[`Python${provenance?.python_version?' '+provenance.python_version:''}`];
+ if(provenance?.source_revision)details.push(`${words.revision}: ${provenance.source_revision.slice(0,12)}${provenance.source_dirty?' ('+words.workingTree+')':''}`);
+ if(provenance?.platform)details.push(`${words.environment}: ${provenance.platform}`);
+ if(selected.source_sha256)details.push(`${words.sourceHash}: ${selected.source_sha256}`);
+ const cleanRevision=provenance?.source_dirty===false && /^[0-9a-f]{40}$/.test(provenance.source_revision||'');
+ const provenanceLine=document.createElement('p');provenanceLine.textContent=`${words.recorded} ${selected.recorded_at} · ${words.version} ${trace.library_version}`;
+ const technical=document.createElement('details'),technicalLabel=document.createElement('summary'),technicalText=document.createElement('p');technicalLabel.textContent=language==='fr'?'Détails de la capture':'Capture details';technicalText.textContent=details.join(' · ');technical.append(technicalLabel,technicalText);
+ if(cleanRevision){const captureLink=document.createElement('a');captureLink.id='capture-source';captureLink.href=`https://github.com/Musyg/agent-resilience/blob/${provenance.source_revision}/examples/visual_demo.py`;captureLink.textContent=language==='fr'?'Lire le code de cette capture':'Read the code for this capture';technical.append(captureLink);}
+ byId('provenance').replaceChildren(provenanceLine,technical);
+ byId('reproduction-command').textContent=cleanRevision?`git checkout ${provenance.source_revision}\npython -m examples.visual_demo --output demo-output`:'python -m examples.visual_demo --output demo-output';
+ comparison(words);
  byId('rows').replaceChildren(...selected.events.map((item,index) => {
   const row=document.createElement('tr');row.classList.toggle('current',index===position);
   const detail=scenarioId==='circuit'?item.upstream_calls:scenarioId==='dlq'?item.retry_count:item.published_count;
-  [index+1,formatElapsed(item.elapsed_s),item.state,item.outcome,detail].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});return row;
+  const stepCell=document.createElement('td'),button=document.createElement('button');button.type='button';button.className='trace-select';button.dataset.step=String(index);button.textContent=String(index+1);button.setAttribute('aria-label',`${words.step} ${index+1}`);if(index===position)button.setAttribute('aria-current','step');button.addEventListener('click',()=>selectStep(index));stepCell.append(button);row.append(stepCell);
+  [formatElapsed(item.elapsed_s),item.state,item.outcome,detail].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});return row;
  }));
 }
 byId('play').addEventListener('click',()=>{
  if(timer!==null){pause();render();return;}
  if(position===scenarios[scenarioId].events.length-1)position=0;
- timer=setInterval(()=>{position++;if(position===scenarios[scenarioId].events.length-1)pause();render();},1800);render();
+ syncLocation();start();render();
 });
-byId('next').addEventListener('click',()=>{pause();position=Math.min(position+1,scenarios[scenarioId].events.length-1);render();});
-byId('restart').addEventListener('click',()=>{pause();position=0;render();});
-byId('language').addEventListener('click',()=>{language=language==='fr'?'en':'fr';render();});
-document.querySelectorAll('[data-scenario]').forEach(button=>button.addEventListener('click',()=>{if(Object.hasOwn(scenarios,button.dataset.scenario)){pause();scenarioId=button.dataset.scenario;position=0;render();}}));
+byId('previous').addEventListener('click',()=>selectStep(position-1));
+byId('next').addEventListener('click',()=>selectStep(position+1));
+byId('restart').addEventListener('click',()=>selectStep(0));
+byId('language').addEventListener('click',()=>{language=language==='fr'?'en':'fr';syncLocation();render();});
+byId('speed').addEventListener('change',()=>{const nextSpeed=Number(byId('speed').value);if(![0.5,1,2].includes(nextSpeed))return;speed=nextSpeed;const playing=timer!==null;pause();if(playing)start();render();});
+document.querySelectorAll('[data-scenario]').forEach(button=>button.addEventListener('click',()=>{if(Object.hasOwn(scenarios,button.dataset.scenario)){pause();scenarioId=button.dataset.scenario;position=0;syncLocation();render();}}));
+window.addEventListener('popstate',()=>{pause();readLocation();syncLocation('replace');render();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();render();}});
+readLocation();syncLocation('replace');
 render();
 </script>
 </body>

@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import time
+from copy import deepcopy
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -33,8 +34,11 @@ class LocalDependency:
         return "ok"
 
 
-def run_scenario() -> dict:
+def run_scenario(input_schedule=None, experiment_id=None) -> dict:
     """Observe guarded() before, during and after each sequential attempt."""
+    from examples.demo_comparison import circuit_input_schedule
+
+    input_schedule = circuit_input_schedule() if input_schedule is None else input_schedule
     registry = CircuitBreakerRegistry(config={"upstream": {"failure_threshold": 3, "recovery_timeout_s": 2}})
     dependency = LocalDependency()
     breaker = registry.get("upstream")
@@ -44,7 +48,7 @@ def run_scenario() -> dict:
     attempts = 0
     blocked = 0
 
-    def record(phase: str, outcome: str, called: bool = False) -> None:
+    def record(phase: str, outcome: str, called: bool = False, input_id=None) -> None:
         events.append(
             {
                 "index": len(events),
@@ -57,11 +61,12 @@ def run_scenario() -> dict:
                 "blocked": blocked,
                 "called": called,
                 "available": dependency.available,
+                "input_id": input_id,
                 "breaker": breaker.status(),
             }
         )
 
-    def attempt(phase: str) -> None:
+    def attempt(phase: str, input_id: int) -> None:
         nonlocal attempts, blocked
         attempts += 1
         before = dependency.calls
@@ -69,7 +74,7 @@ def run_scenario() -> dict:
             with registry.guarded("upstream"):
                 # Capture HALF_OPEN before the probe result closes the breaker.
                 if breaker.state.value == "half_open":
-                    record("probe", "allowed")
+                    record("probe", "allowed", input_id=input_id)
                 dependency.call()
             outcome = "success"
         except CircuitBreakerOpen:
@@ -77,21 +82,16 @@ def run_scenario() -> dict:
             outcome = "blocked"
         except RuntimeError:
             outcome = "failure"
-        record(phase, outcome, dependency.calls > before)
+        record(phase, outcome, dependency.calls > before, input_id=input_id)
 
     record("initial", "ready")
-    attempt("healthy")
-    dependency.available = False
-    for _ in range(3):
-        attempt("failure")
-    for _ in range(2):
-        attempt("isolation")
-    record("cooldown", "waiting")
-    # No manual reset, state assignment or patched clock in the real run.
-    time.sleep(breaker.recovery_timeout + 0.05)
-    dependency.available = True
-    attempt("recovery")
-    attempt("resumed")
+    for item in input_schedule:
+        if item["wait_before_s"]:
+            record("cooldown", "waiting")
+            # No manual reset, state assignment or patched clock in the real run.
+            time.sleep(item["wait_before_s"])
+        dependency.available = item["available"]
+        attempt(item["phase"], item["input_id"])
     trace = {
         "schema_version": 1,
         "library_version": __version__,
@@ -100,6 +100,8 @@ def run_scenario() -> dict:
         "scenario": "serial local dependency failure and recovery",
         "config": {"failure_threshold": 3, "recovery_timeout_s": 2},
         "events": events,
+        "input_schedule": deepcopy(input_schedule),
+        "experiment_id": experiment_id,
     }
     validate_trace(trace)
     return trace
@@ -165,15 +167,29 @@ def render_html(trace: dict) -> str:
 
 
 def run_all_scenarios() -> dict:
+    from uuid import uuid4
+
+    from examples.demo_comparison import (
+        build_comparison,
+        capture_provenance,
+        circuit_input_schedule,
+        run_baseline,
+    )
     from examples.demo_scenarios import run_additional_scenarios
 
-    circuit = run_scenario()
+    schedule = circuit_input_schedule()
+    experiment_id = f"circuit-outage-{uuid4().hex}"
+    circuit = run_scenario(schedule, experiment_id)
+    baseline = run_baseline(schedule, experiment_id)
+    comparison = build_comparison(circuit, baseline)
     additional = run_additional_scenarios()
     return {
         "schema_version": 2,
         "library_version": __version__,
         "recorded_at": datetime.now(UTC).isoformat(),
         "scenarios": {"circuit": circuit, **additional},
+        "comparisons": {"circuit": comparison},
+        "provenance": capture_provenance(),
     }
 
 
