@@ -134,6 +134,17 @@ without calling upstream. After the two-second recovery timeout, a successful
 `HALF_OPEN` probe closes the circuit. The final request passes normally:
 **8 attempts, 6 upstream calls, 2 blocked calls**.
 
+The full export also executes an unprotected baseline. Both runs receive the
+same eight-attempt input schedule: one healthy call, five calls during a local
+outage, a 2.05-second recovery wait, and two calls after recovery. Each run
+actually performs its own wait. The trace records the shared experiment ID,
+input IDs and availability for every attempt. Its comparison summaries count
+observed calls, failures, successes and blocked requests; they are not latency
+or throughput benchmarks. This schedule produces eight upstream calls without
+the breaker and six with it, while both runs complete the same three successful
+calls. The difference is two rejected attempts rather than two additional calls
+to the unavailable dependency.
+
 Two more scenarios cover the other components:
 
 - **DLQ**: one task fails twice, moves to the dead-letter queue, is inspected,
@@ -145,6 +156,11 @@ The queue uses an in-memory Redis adapter and MQTT uses a local client adapter.
 The library components execute unchanged; no external service is needed. The
 JSON trace preserves the task payload, queue sizes and observed message sequence.
 Use `--scenario circuit` to export only the original circuit breaker scenario.
+The full trace keeps `scenarios.circuit`, `scenarios.dlq` and `scenarios.mqtt`
+and adds `comparisons.circuit` with the paired execution and summaries. Root
+`provenance` records the capture's Git revision, working-tree dirty status,
+capture-script hashes, Python/platform and clock metadata. If Git is unavailable,
+the revision and dirty status are unknown (`null`), not described as clean.
 
 `demo-output/trace.json` contains observations from the three Python scenarios. The
 browser replays them at a readable pace; it does not run a backend or contact an
